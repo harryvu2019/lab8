@@ -29,8 +29,79 @@ size_t Size(void* ptr)
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
+// implement merge sort
+// extraMemoryAllocated counts bytes of extra memory allocated
+void merge(int pData[], int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    // Allocate memory for temporary arrays
+    int *left = (int *)Alloc(n1 * sizeof(int));
+    int *right = (int *)Alloc(n2 * sizeof(int));
+
+    // Copy data to temporary arrays left[] and right[]
+    for (i = 0; i < n1; i++)
+        left[i] = pData[l + i];
+    for (j = 0; j < n2; j++)
+        right[j] = pData[m + 1 + j];
+
+    // Merge the temporary arrays back into pData[l..r]
+    i = 0; // Initial index of first subarray
+    j = 0; // Initial index of second subarray
+    k = l; // Initial index of merged subarray
+    while (i < n1 && j < n2)
+    {
+        if (left[i] <= right[j])
+        {
+            pData[k] = left[i];
+            i++;
+        }
+        else
+        {
+            pData[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements of left[], if any
+    while (i < n1)
+    {
+        pData[k] = left[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of right[], if any
+    while (j < n2)
+    {
+        pData[k] = right[j];
+        j++;
+        k++;
+    }
+
+    // Deallocate memory for temporary arrays
+    DeAlloc(left);
+    DeAlloc(right);
+}
+
+// Merge sort function
 void mergeSort(int pData[], int l, int r)
 {
+    if (l < r)
+    {
+        // Same as (l+r)/2, but avoids overflow for large l and r
+        int m = l + (r - l) / 2;
+
+        // Sort first and second halves
+        mergeSort(pData, l, m);
+        mergeSort(pData, m + 1, r);
+
+        // Merge the sorted halves
+        merge(pData, l, m, r);
+    }
 }
 
 // parses input file to an integer array
